@@ -1,0 +1,19 @@
+{
+  "name": "movies-website",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jonathanavp7/movies-website.git"
+  },
+  "author": "@jonathanavp7",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jonathanavp7/movies-website/issues"
+  },
+  "homepage": "https://github.com/jonathanavp7/movies-website#readme"
+}
