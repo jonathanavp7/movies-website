@@ -122,7 +122,7 @@ function movieDetailsPage() {
         <!-- Play Movie Container -->
         <div class="play-container container">
             <!-- Play Image -->
-            <img src="./src/assets/img/play-page-img/play-background.jpg" alt="" class="play-img">
+            <img src="#" alt="" class="play-img">
             <!-- Play Text -->
             <div class="play-text">
                 <h2>Jumanji: Welcome to the Jungle</h2>
