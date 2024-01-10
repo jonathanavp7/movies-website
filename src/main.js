@@ -1,3 +1,5 @@
+// Data
+
 const api = axios.create({
     baseURL: 'https://api.themoviedb.org/3/',
     headers: {
@@ -5,7 +7,45 @@ const api = axios.create({
     },
     params: {
         'api_key': API_KEY,
+        // 'language': navigator.language || "es-ES"
     }
+});
+
+function likedMoviesList() {
+    const item = JSON.parse(localStorage.getItem('liked_movies'));
+    let movies;
+
+    if (item) {
+        movies = item;
+    } else {
+        movies = {}
+    }
+
+    return movies; 
+}
+
+function likeMovie(movie) {
+    const likedMovies = likedMoviesList();
+
+    console.log(likedMovies);
+
+    if (likedMovies[movie.id]) {
+        likedMovies[movie.id] = undefined;
+    } else {
+        likedMovies[movie.id] = movie;
+    }
+
+    localStorage.setItem('liked_movies', JSON.stringify(likedMovies));
+}
+
+// lazy loading
+const lazyLoader = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+            const url = entry.target.getAttribute('data-img');
+            entry.target.setAttribute('src', url);
+        }
+    });
 });
 
 async function getTrendingMoviesPreview() {
@@ -30,7 +70,7 @@ async function getTrendingMoviesPreview() {
         const movieImg = document.createElement('img');
         movieImg.classList.add('movie-box-img');
         movieImg.setAttribute('alt', movie.title);
-        movieImg.setAttribute('src', 'https://image.tmdb.org/t/p/w300' + movie.poster_path);
+        movieImg.setAttribute('data-img', 'https://image.tmdb.org/t/p/w300' + movie.poster_path);
         // box text 
         const boxText = document.createElement('div');
         let voteAverage = movie.vote_average;
@@ -44,10 +84,103 @@ async function getTrendingMoviesPreview() {
             </a>
         `;
 
+        const likeBtn = document.createElement('button');
+        likeBtn.classList.add('like-btn');
+        likedMoviesList()[movie.id] && likeBtn.classList.add('like-btn--liked');
+        likeBtn.addEventListener('click', () => {
+            likeBtn.classList.toggle('like-btn--liked');
+            likeMovie(movie);
+            getLikedMovies();
+        });
+
+        lazyLoader.observe(movieImg);
+
         movieBox.appendChild(boxText);
         movieBox.appendChild(movieImg);
+        swiperSlide.appendChild(likeBtn);
         swiperSlide.appendChild(movieBox);
         popular.appendChild(swiperSlide);
+    });
+}
+
+async function getTrendingMovies() {
+    const { data } = await api('trending/movie/day');
+    const movies = data.results;
+
+    const moviesContent = document.querySelector('.movies .movies-content');
+
+    movies.forEach(movie => {
+        const movieBox = document.createElement('div');
+        movieBox.classList.add('movie-box');
+        movieBox.addEventListener('click', () => {
+            // window.location.href = './movie.html';
+            location.hash = '#movie=' + movie.id;
+        });
+        const movieImg = document.createElement('img');
+        movieImg.classList.add('movie-box-img');
+        movieImg.setAttribute('alt', movie.title);
+        movieImg.setAttribute('src', 'https://image.tmdb.org/t/p/w300' + movie.poster_path);
+        movieImg.addEventListener('error', () => {
+            movieImg.setAttribute('src', 'https://i1.wp.com/image.24ur.com/media/images/gallery/Jan2008/60091132.jpg');
+        });
+        // box text 
+        const boxText = document.createElement('div');
+        let voteAverage = movie.vote_average;
+        let voteAverageFixed = voteAverage.toFixed(1);
+        boxText.classList.add('box-text');
+        boxText.innerHTML = `
+            <h2 class="movie-title">${movie.title}</h2>
+            <span class="movie-type">${voteAverageFixed} <i class='bx bxs-star star-trend' ></i></span>
+            <a href="#" class="watch-btn play-btn">
+                <i class='bx bx-play-circle' ></i>
+            </a>
+        `;
+
+        movieBox.append(movieImg, boxText);
+        moviesContent.appendChild(movieBox);
+    });
+}
+
+let page = 1;
+
+async function getPaginatedTrendingMovies() {
+    page++
+    const { data } = await api('trending/movie/day', {
+        params: {
+            page,
+        },
+    });
+    const movies = data.results;
+
+    const moviesContent = document.querySelector('.movies .movies-content');
+
+    movies.forEach(movie => {
+        const movieBox = document.createElement('div');
+        movieBox.classList.add('movie-box');
+        movieBox.addEventListener('click', () => {
+            // window.location.href = './movie.html';
+            location.hash = '#movie=' + movie.id;
+        });
+        const movieImg = document.createElement('img');
+        movieImg.classList.add('movie-box-img');
+        movieImg.setAttribute('alt', movie.title);
+        movieImg.setAttribute('src', 'https://image.tmdb.org/t/p/w300' + movie.poster_path);
+        movieImg.addEventListener('error', () => {
+            movieImg.setAttribute('src', 'https://i1.wp.com/image.24ur.com/media/images/gallery/Jan2008/60091132.jpg');
+        });
+        // box text 
+        const boxText = document.createElement('div');
+        boxText.classList.add('box-text');
+        boxText.innerHTML = `
+            <h2 class="movie-title">${movie.title}</h2>
+            <span class="movie-type">${movie.vote_average} <i class='bx bxs-star star-trend' ></i></span>
+            <a href="#" class="watch-btn play-btn">
+                <i class='bx bx-play-circle' ></i>
+            </a>
+        `;
+
+        movieBox.append(movieImg, boxText);
+        moviesContent.appendChild(movieBox);
     });
 }
 
@@ -91,6 +224,9 @@ async function getMoviesByCategory(id) {
         movieImg.classList.add('movie-box-img');
         movieImg.setAttribute('alt', movie.title);
         movieImg.setAttribute('src', 'https://image.tmdb.org/t/p/w300' + movie.poster_path);
+        movieImg.addEventListener('error', () => {
+            movieImg.setAttribute('src', 'https://i1.wp.com/image.24ur.com/media/images/gallery/Jan2008/60091132.jpg');
+        });
         // box text 
         const boxText = document.createElement('div');
         boxText.classList.add('box-text');
@@ -120,10 +256,14 @@ async function getMoviesBySearch(query) {
     const popularSection = document.querySelector('.popular');
     const genresSection = document.querySelector('.genres');
     const moviesSection = document.getElementById('movies');
+    const nextPage = document.querySelector('.next-page');
+    const favouritesSection = document.getElementById('favourites');
     homeSection.innerHTML = "";
     popularSection.innerHTML = "";
     genresSection.innerHTML = "";
     moviesSection.innerHTML = "";
+    nextPage.innerHTML = "";
+    favouritesSection.innerHTML = "";
     homeSection.classList.remove('home');
     homeSection.classList.add('movies');
     homeSection.classList.add('container');
@@ -142,6 +282,9 @@ async function getMoviesBySearch(query) {
         movieImg.classList.add('movie-box-img');
         movieImg.setAttribute('alt', movie.title);
         movieImg.setAttribute('src', 'https://image.tmdb.org/t/p/w300' + movie.poster_path);
+        movieImg.addEventListener('error', () => {
+            movieImg.setAttribute('src', 'https://i1.wp.com/image.24ur.com/media/images/gallery/Jan2008/60091132.jpg');
+        });
         let voteAverage = movie.vote_average;
         let voteAverageFixed = voteAverage.toFixed(1);
         // box text 
@@ -205,6 +348,9 @@ async function getRelatedMoviesById(id) {
         movieImg.classList.add('movie-box-img');
         movieImg.setAttribute('alt', movie.title);
         movieImg.setAttribute('src', 'https://image.tmdb.org/t/p/w300' + movie.poster_path);
+        movieImg.addEventListener('error', () => {
+            movieImg.setAttribute('src', 'https://i1.wp.com/image.24ur.com/media/images/gallery/Jan2008/60091132.jpg');
+        });
         let voteAverage = movie.vote_average;
         let voteAverageFixed = voteAverage.toFixed(1);
         // box text 
@@ -223,9 +369,66 @@ async function getRelatedMoviesById(id) {
     });
 }
 
+function getLikedMovies() {
+    const likedMovies = likedMoviesList();
+    const moviesArray = Object.values(likedMovies);
+
+    const favouritesMoviesContent = document.querySelector('.favourites .favourites-content .swiper-wrapper');
+
+    favouritesMoviesContent.innerHTML = '';
+
+    moviesArray.forEach(movie => {
+        // swiper slide
+        const swiperSlide = document.createElement('div');
+        swiperSlide.classList.add('swiper-slide');
+        // movie container
+        const movieBox = document.createElement('div');
+        movieBox.classList.add('movie-box');
+        movieBox.addEventListener('click', () => {
+            // window.location.href = './movie.html';
+            location.hash = '#movie=' + movie.id;
+        });
+        // movie img
+        const movieImg = document.createElement('img');
+        movieImg.classList.add('movie-box-img');
+        movieImg.setAttribute('alt', movie.title);
+        movieImg.setAttribute('data-img', 'https://image.tmdb.org/t/p/w300' + movie.poster_path);
+        // box text 
+        const boxText = document.createElement('div');
+        let voteAverage = movie.vote_average;
+        let voteAverageFixed = voteAverage.toFixed(1);
+        boxText.classList.add('box-text');
+        boxText.innerHTML = `
+            <h2 class="movie-title">${movie.title}</h2>
+            <span class="movie-type">${voteAverageFixed} <i class='bx bxs-star star-trend' ></i></span>
+            <a href="#" class="watch-btn play-btn">
+                <i class='bx bx-play-circle' ></i>
+            </a>
+        `;
+
+        const likeBtn = document.createElement('button');
+        likeBtn.classList.add('like-btn');
+        likedMoviesList()[movie.id] && likeBtn.classList.add('like-btn--liked');
+        likeBtn.addEventListener('click', () => {
+            likeBtn.classList.toggle('like-btn--liked');
+            likeMovie(movie);
+            getLikedMovies();
+        });
+
+        lazyLoader.observe(movieImg);
+
+        movieBox.appendChild(boxText);
+        movieBox.appendChild(movieImg);
+        swiperSlide.appendChild(likeBtn);
+        swiperSlide.appendChild(movieBox);
+        favouritesMoviesContent.appendChild(swiperSlide);
+    });
+}
 
 getTrendingMoviesPreview();
+getTrendingMovies();
 getCategoriesPreview();
+getLikedMovies();
 
 // Swiper Js
 var swiper = new Swiper(".popular-content", {

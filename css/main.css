@@ -261,6 +261,34 @@ header {
     bottom: 0.8rem;
     right: 0.8rem;
 }
+/* ----- Like Btn ----- */
+.like-btn {
+    cursor: pointer;
+    background-color: var(--container-color);
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin: 0;
+    padding: 0;
+    border: none;
+    z-index: 1;
+    transition: ease all 0.3s;
+}
+.like-btn::before {
+    content: '💛';
+}
+.like-btn--liked {
+    background-color: var(--main-color);
+}
+.like-btn--liked::before {
+    content: '🖤';
+}
+.swiper-slide {
+    position: relative;
+}
 /* ----- Genres Section ----- */
 .genres-links {
     display: grid;
@@ -338,9 +366,10 @@ header {
 }
 .next-btn {
     background: var(--main-color);
-    padding: 12px 20px;
+    padding: 14px 24px;
     color: var(--text-color);
     font-weight: 500;
+    border: none;
 }
 .next-btn:hover {
     background: var(--hover-color);

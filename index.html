@@ -139,100 +139,35 @@
         </div>
         <!-- Movies Content -->
         <div class="movies-content">
-            <!-- Movies Box 1 -->
-            <div class="movie-box">
-                <img src="./src/assets/img/movie-1.jpg" alt="" class="movie-box-img">
-                <div class="box-text">
-                    <h2 class="movie-title">Jumanji: Welcome to the Jungle</h2>
-                    <span class="movie-type">Action</span>
-                    <a href="#" class="watch-btn play-btn">
-                        <i class='bx bx-play-circle' ></i>
-                    </a>
-                </div>
-            </div>
-            <!-- Movies Box 2 -->
-            <div class="movie-box">
-                <img src="./src/assets/img/movie-2.jpg" alt="" class="movie-box-img">
-                <div class="box-text">
-                    <h2 class="movie-title">Hitman's Wife's Bodyguard</h2>
-                    <span class="movie-type">Action / Comedy</span>
-                    <a href="#" class="watch-btn play-btn">
-                        <i class='bx bx-play-circle' ></i>
-                    </a>
-                </div>
-            </div>
-            <!-- Movies Box 3 -->
-            <div class="movie-box">
-                <img src="./src/assets/img/movie-3.jpg" alt="" class="movie-box-img">
-                <div class="box-text">
-                    <h2 class="movie-title">Shang-Chi</h2>
-                    <span class="movie-type">Action / Sci-Fi</span>
-                    <a href="#" class="watch-btn play-btn">
-                        <i class='bx bx-play-circle' ></i>
-                    </a>
-                </div>
-            </div>
-            <!-- Movies Box 4 -->
-            <div class="movie-box">
-                <img src="./src/assets/img/movie-4.jpg" alt="" class="movie-box-img">
-                <div class="box-text">
-                    <h2 class="movie-title">The Eternals</h2>
-                    <span class="movie-type">Action / Sci-Fi</span>
-                    <a href="#" class="watch-btn play-btn">
-                        <i class='bx bx-play-circle' ></i>
-                    </a>
-                </div>
-            </div>
-            <!-- Movies Box 5 -->
-            <div class="movie-box">
-                <img src="./src/assets/img/movie-5.jpg" alt="" class="movie-box-img">
-                <div class="box-text">
-                    <h2 class="movie-title">Spectre</h2>
-                    <span class="movie-type">Action</span>
-                    <a href="#" class="watch-btn play-btn">
-                        <i class='bx bx-play-circle' ></i>
-                    </a>
-                </div>
-            </div>
-            <!-- Movies Box 6 -->
-            <div class="movie-box">
-                <img src="./src/assets/img/movie-6.jpg" alt="" class="movie-box-img">
-                <div class="box-text">
-                    <h2 class="movie-title">Money Heist</h2>
-                    <span class="movie-type">Action / Sci-Fi</span>
-                    <a href="#" class="watch-btn play-btn">
-                        <i class='bx bx-play-circle' ></i>
-                    </a>
-                </div>
-            </div>
-            <!-- Movies Box 7 -->
-            <div class="movie-box">
-                <img src="./src/assets/img/movie-7.jpg" alt="" class="movie-box-img">
-                <div class="box-text">
-                    <h2 class="movie-title">The Wolverine</h2>
-                    <span class="movie-type">Action / Sci-Fi</span>
-                    <a href="#" class="watch-btn play-btn">
-                        <i class='bx bx-play-circle' ></i>
-                    </a>
-                </div>
-            </div>
-            <!-- Movies Box 8 -->
-            <div class="movie-box">
-                <img src="./src/assets/img/movie-8.jpg" alt="" class="movie-box-img">
-                <div class="box-text">
-                    <h2 class="movie-title">Johnny English</h2>
-                    <span class="movie-type">Action / Comedy</span>
-                    <a href="#" class="watch-btn play-btn">
-                        <i class='bx bx-play-circle' ></i>
-                    </a>
-                </div>
-            </div>
+            <!-- Aqui van a ir las movies and shows -->
         </div>
     </section>
     <!-- Next Page -->
     <div class="next-page">
-        <a href="#" class="next-btn">Next Page</a>
+        <button onclick="getPaginatedTrendingMovies()" class="next-btn">Load More</button>
     </div>
+    <!-- Favourites Section Start -->
+    <section class="favourites popular container" id="favourites">
+        <!-- Heading -->
+        <div class="heading">
+            <h2 class="heading-title">Favourites Movies</h2>
+            <!-- Swiper Buttons -->
+            <div class="swiper-btn">
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+            </div>
+        </div>
+        <!-- Content -->
+        <div class="favourites-content popular-content swiper">
+            <div class="swiper-wrapper">
+                <!-- Aqui van las peliculas en tendencia -->
+                <div class="movie-box loading-skeleton"></div>
+                <div class="movie-box loading-skeleton"></div>
+                <div class="movie-box loading-skeleton"></div>
+                <div class="movie-box loading-skeleton"></div>
+            </div>
+        </div>
+    </section>
     <!-- Copyright -->
     <div class="copyright">
         <p>&#169; YunFilms All Rights Reserved</p>
